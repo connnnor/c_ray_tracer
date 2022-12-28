@@ -1,22 +1,25 @@
 #include <stdlib.h> //getenv, atoi
 #include <stdio.h>
-#include <stdbool.h>
+#include <math.h>
 #include "vec3.h"
 #include "ray.h"
 
 #define IMG_WIDTH  256
 #define IMG_HEIGHT 256
 
-bool hit_sphere(const point_s *center, const double radius, const ray_s *r) {
+double hit_sphere(const point_s *center, const double radius, const ray_s *r) {
     vec3_s *oc = vec_sub_vec(r->orig, center);
 
     double a = dot(r->dir, r->dir);
     double b = 2.0 * dot(oc, r->dir);
     double c = dot(oc, oc) - radius * radius;
     double discr = b*b - 4*a*c;
-
     vec_delete(oc);
-    return (discr > 0);
+    if (discr < 0.0) {
+        return -1.0;
+    } else {
+        return (-b - sqrt(discr)) / (2.0*a);
+    }
 }
 
 void write_color(const color_s *in) {
@@ -27,11 +30,13 @@ void write_color(const color_s *in) {
 }
 
 color_s *ray_color(const ray_s *r) {
-    if (hit_sphere(vec3_new(.e = {0.0, 0.0, -1.0}), 0.5, r)) {
-        return vec3_new(.e = {1.0, 0.0, 0.0});
+    double t = hit_sphere(vec3_new(.e = {0.0, 0.0, -1.0}), 0.5, r);
+    if (t > 0.0) {
+        vec3_s *n = vec_unit_vec( this_sub_vec(point_at(r, t), vec3_new(.e = {0.0, 0.0, -1.0})));
+        return this_mult_c(this_add_c(n, 1.0), 0.5);
     }
     vec3_s *unit = vec_unit_vec(r->dir);
-    double t = 0.5 * ((*unit).e[1] + 1.0);
+    t = 0.5 * ((*unit).e[1] + 1.0);
     return vec_add_vec(this_mult_c(vec3_new(.e = {1.0, 1.0, 1.0}), 1.0 - t),  this_mult_c(vec3_new(.e = {0.5, 0.7, 1.0}), t));
 } 
 

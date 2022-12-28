@@ -8,6 +8,6 @@ ray_s *ray_new_base(ray_s in) {
     return out;
 }
 
-vec3_s point_at(double t) {
-
+point_s *point_at(const ray_s *this, const double t) {
+    return this_add_vec(vec_mult_c(this->dir, t), this->orig);
 }

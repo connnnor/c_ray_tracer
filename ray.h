@@ -12,7 +12,7 @@ typedef struct {
 
 ray_s *ray_new_base(ray_s in);
 
-vec3_s point_at(double t);
+point_s *point_at(const ray_s *this, const double t);
 vec3_s ray_orig(ray_s *this);
 vec3_s ray_dir(ray_s *this);
 

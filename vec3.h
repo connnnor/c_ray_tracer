@@ -16,6 +16,7 @@ void vec_delete(vec3_s *in);
 
 vec3_s *this_add_vec(vec3_s *this, const vec3_s *v);
 vec3_s *vec_add_vec(const vec3_s *u, const vec3_s *v);
+vec3_s *this_add_c(vec3_s *v, const double c);
 vec3_s *vec_add_c(vec3_s *v, const double c);
 
 vec3_s *vec_sub_vec(const vec3_s *this, const vec3_s *v);
