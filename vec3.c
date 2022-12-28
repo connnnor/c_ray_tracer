@@ -10,20 +10,24 @@ vec3_s *vec3_new_base(vec3_s in) {
     return out;
 }
 
-vec3_s *this_add_vec(vec3_s *this, vec3_s *v) {
+void vec_delete(vec3_s *in) {
+    free(in);
+}
+
+vec3_s *this_add_vec(vec3_s *this, const vec3_s *v) {
     (*this).e[0] += (*v).e[0];
     (*this).e[1] += (*v).e[1];
     (*this).e[2] += (*v).e[2];
     return this;
 }
 
-vec3_s *vec_add_vec(vec3_s *v1, vec3_s *v2) {
+vec3_s *vec_add_vec(const vec3_s *v1, const vec3_s *v2) {
     vec3_s *out = vec3_new(.e = {(*v1).e[0], (*v1).e[1], (*v1).e[2]});
     this_add_vec(out, v2);
     return out;
 }
 
-vec3_s *this_add_c(vec3_s *this, double c) {
+vec3_s *this_add_c(vec3_s *this, const double c) {
     (*this).e[0] += c;
     (*this).e[1] += c;
     (*this).e[2] += c;
@@ -31,20 +35,20 @@ vec3_s *this_add_c(vec3_s *this, double c) {
 }
 
 
-vec3_s *vec_add_c(vec3_s *v, double c) {
+vec3_s *vec_add_c(vec3_s *v, const double c) {
     vec3_s *out = vec3_new(.e = {(*v).e[0], (*v).e[1], (*v).e[2]});
     this_add_c(out, c);
     return out;
 }
 
-vec3_s *this_sub_vec(vec3_s *this, vec3_s *v) {
+vec3_s *this_sub_vec(vec3_s *this, const vec3_s *v) {
     (*this).e[0] -= (*v).e[0];
     (*this).e[1] -= (*v).e[1];
     (*this).e[2] -= (*v).e[2];
     return this;
 }
 
-vec3_s *vec_sub_vec(vec3_s *v1, vec3_s *v2) {
+vec3_s *vec_sub_vec(const vec3_s *v1, const vec3_s *v2) {
     vec3_s *out = vec3_new(.e = {(*v1).e[0], (*v1).e[1], (*v1).e[2]});
     this_sub_vec(out, v2);
     return out;
@@ -55,7 +59,7 @@ vec3_s *this_sub_c(vec3_s *this, double c) {
     return this;
 }
 
-vec3_s *vec_sub_c(vec3_s *v, double c) {
+vec3_s *vec_sub_c(const vec3_s *v, double c) {
     vec3_s *out = vec3_new(.e = {(*v).e[0], (*v).e[1], (*v).e[2]});
     this_sub_c(out, c);
     return out;
@@ -68,20 +72,20 @@ vec3_s *this_mult_c(vec3_s *this, double c) {
     return this;
 }
 
-vec3_s *vec_mult_c(vec3_s *v, double c) {
+vec3_s *vec_mult_c(const vec3_s *v, double c) {
     vec3_s *out = vec3_new(.e = {(*v).e[0], (*v).e[1], (*v).e[2]});
     this_mult_c(out, c);
     return out;
 }
 
-vec3_s *this_div_c(vec3_s *this, double c) {
+vec3_s *this_div_c(vec3_s *this, const double c) {
     (*this).e[0] /= c;
     (*this).e[1] /= c;
     (*this).e[2] /= c;
     return this;
 }
 
-vec3_s *vec_div_c(vec3_s *v, double c) {
+vec3_s *vec_div_c(const vec3_s *v, const double c) {
     vec3_s *out = vec3_new(.e = {(*v).e[0], (*v).e[1], (*v).e[2]});
     this_div_c(out, c);
     return out;
@@ -92,17 +96,17 @@ vec3_s *this_neg(vec3_s *this) {
     return this;
 }
 
-vec3_s *vec_neg(vec3_s *v) {
+vec3_s *vec_neg(const vec3_s *v) {
     vec3_s *out = vec3_new(.e = {(*v).e[0], (*v).e[1], (*v).e[2]});
     this_neg(out);
     return out;
 }
 
-double length(vec3_s *this) {
+double length(const vec3_s *this) {
     return sqrt(length_sq(this));
 }
 
-double length_sq(vec3_s *this) {
+double length_sq(const vec3_s *this) {
     return (*this).e[0] * (*this).e[0] + \
            (*this).e[1] * (*this).e[1] + \
            (*this).e[2] * (*this).e[2];
@@ -112,12 +116,20 @@ vec3_s *this_unit_vec(vec3_s *this) {
     return this_div_c(this, length(this));
 }
 
-vec3_s *vec_unit_vec(vec3_s *v) {
+vec3_s *vec_unit_vec(const vec3_s *v) {
     vec3_s *out = vec3_new(.e = {(*v).e[0], (*v).e[1], (*v).e[2]});
     this_unit_vec(out);
     return out;
 }
 
-void vec3_print(vec3_s *in) {
+// Utility
+
+inline double dot(const vec3_s *u, const vec3_s *v) {
+    return (*v).e[0] * (*u).e[0] +
+           (*v).e[1] * (*u).e[1] +
+           (*v).e[2] * (*u).e[2];
+}
+
+void vec3_print(const vec3_s *in) {
     printf("v = (%f, %f, %f)\n", (*in).e[0], (*in).e[1], (*in).e[2]);
 }

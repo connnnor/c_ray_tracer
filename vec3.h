@@ -7,32 +7,39 @@ typedef struct {
     double e[3];
 } vec3_s;
 
+typedef vec3_s color_s;
+typedef vec3_s point_s;
+
 
 vec3_s *vec3_new_base(vec3_s in);
+void vec_delete(vec3_s *in);
 
-vec3_s *this_add_vec(vec3_s *this, vec3_s *v);
-vec3_s *vec_add_vec(vec3_s *this, vec3_s *v);
-vec3_s *vec_add_c(vec3_s *v, double c);
+vec3_s *this_add_vec(vec3_s *this, const vec3_s *v);
+vec3_s *vec_add_vec(const vec3_s *u, const vec3_s *v);
+vec3_s *vec_add_c(vec3_s *v, const double c);
 
-vec3_s *vec_sub_vec(vec3_s *this, vec3_s *v);
-vec3_s *this_sub_vec(vec3_s *this, vec3_s *v);
-vec3_s *vec_sub_c(vec3_s *this, double c);
+vec3_s *vec_sub_vec(const vec3_s *this, const vec3_s *v);
+vec3_s *this_sub_vec(vec3_s *u, const vec3_s *v);
+vec3_s *vec_sub_c(const vec3_s *u, double c);
 
-vec3_s *this_mult_c(vec3_s *this, double c);
-vec3_s *vec_mult_c(vec3_s *this, double c);
+vec3_s *this_mult_c(vec3_s *this, const double c);
+vec3_s *vec_mult_c(const vec3_s *u, double c);
 vec3_s *this_neg(vec3_s *this);
-vec3_s *vec_neg(vec3_s *this);
+vec3_s *vec_neg(const vec3_s *u);
 
-vec3_s *this_div_c(vec3_s *this, double c);
-vec3_s *vec_div_c(vec3_s *this, double c);
+vec3_s *this_div_c(vec3_s *this, const double c);
+vec3_s *vec_div_c(const vec3_s *u, const double c);
 
-double length(vec3_s *this);
-double length_sq(vec3_s *this);
-
+double length(const vec3_s *u);
+double length_sq(const vec3_s *u);
 
 vec3_s *this_unit_vec(vec3_s *this);
-vec3_s *vec_unit_vec(vec3_s *v);
+vec3_s *vec_unit_vec(const vec3_s *u);
 
 
-void vec3_print(vec3_s *in);
+void vec3_print(const vec3_s *in);
+
+// utility
+double dot(const vec3_s *u, const vec3_s *v);
+
 #endif
