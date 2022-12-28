@@ -10,15 +10,15 @@
 double hit_sphere(const point_s *center, const double radius, const ray_s *r) {
     vec3_s *oc = vec_sub_vec(r->orig, center);
 
-    double a = dot(r->dir, r->dir);
-    double b = 2.0 * dot(oc, r->dir);
-    double c = dot(oc, oc) - radius * radius;
-    double discr = b*b - 4*a*c;
+    double a = length_sq(r->dir);
+    double half_b = dot(oc, r->dir);
+    double c = length_sq(oc) - radius * radius;
+    double discr = half_b*half_b - a*c;
     vec_delete(oc);
     if (discr < 0.0) {
         return -1.0;
     } else {
-        return (-b - sqrt(discr)) / (2.0*a);
+        return (-half_b - sqrt(discr)) / a;
     }
 }
 
