@@ -75,9 +75,6 @@ void list_add(list_obj_s *list, obj_s * obj) {
 void list_add_obj(obj_s *list_obj, obj_s * obj) {
 	list_obj_s *list = list_obj->private;
 	list_add(list, obj);
-//	list->len++;
-//	list->objs = realloc(list->objs, sizeof(obj_s*)*list->len);
-//	list->objs[list->len - 1] = obj;
 }
 
 // sphere
@@ -131,7 +128,6 @@ hit_s* sphere_hit(const ray_s *r, const double t_min, const double t_max, const 
 	point_s hit_pt = point_at(r, root);
 	vec3_s out_norm = vec_div_c(vec_sub_vec(hit_pt, sp->center), sp->rad);
 	hit_s *out = hit_new(r, root, hit_pt, &out_norm);
-//  return hit;
 	return out;
 }
 

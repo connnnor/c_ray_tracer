@@ -1,5 +1,6 @@
 #ifndef VEC3_H
 #define VEC3_H
+#include <math.h>
 
 #define vec3_new(...) vec3_new_base((vec3_s){.e = {0.0, 0.0, 0.0}, __VA_ARGS__})
 
