@@ -36,6 +36,8 @@ hit_s* list_hit(const ray_s *r, const double t_min, const double t_max, const ob
 		obj_s *obj = list->objs[i];
 		hit_s *hit = obj->hit_fp(r, t_min, t_local_max, obj);
 		if (hit != NULL) {
+			// found a closer one. delete
+			if (out != NULL) { hit_delete(out); }
 			out = hit;
 			t_local_max = hit->t;
 		}
@@ -55,11 +57,14 @@ list_obj_s *list_new() {
 	list_obj_s *list = malloc(sizeof(list_obj_s));
 	*obj = (obj_s){.private=list};
 	list->parent = obj;
+	list->len = 0;
 	return list;
 }
 
-void list_delete(obj_s *obj) {
-	// TODO
+void list_delete(list_obj_s *list) {
+    free(list->parent);
+	free(list->objs);
+	free(list);
 }
 
 void list_add(list_obj_s *list, obj_s * obj) {
@@ -89,6 +94,10 @@ obj_s *sphere_new(const point_s p, double r) {
 	out_sp->rad = r;
 	*out = (obj_s){.private=out_sp, .hit_fp=sphere_hit};
 	return out;
+}
+
+void hit_delete(hit_s *obj) {
+	free(obj);
 }
 
 void sphere_delete(obj_s *obj) {

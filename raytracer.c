@@ -18,7 +18,9 @@ void write_color(const color_s *in) {
 color_s ray_color(const ray_s *r, const list_obj_s *world) {
 	hit_s *hit = list_hit(r, 0.0, INFINITY, world->parent);
 	if (hit != NULL) {
-		return vec_mult_c(vec_add_vec(hit->norm, (color_s) {.e = {1.0, 1.0, 1.0}}), 0.5);
+		color_s out = vec_mult_c(vec_add_vec(hit->norm, (color_s) {.e = {1.0, 1.0, 1.0}}), 0.5);
+		free(hit);
+		return out;
 	}
     vec3_s unit = vec_unit_vec(*(r->dir));
     double t = 0.5 * (unit.e[1] + 1.0);
@@ -67,10 +69,12 @@ int main() {
 
             ray_s r = {.orig = &origin, .dir = &dir};
             vec3_s pixel_rgb = ray_color(&r, world);
-	    // for debug
-	    //list_hit(&r, 0.5, 10.0, world);
-	    // end debug
             write_color(&pixel_rgb);
         }
     }
+
+	// Free
+	sphere_delete(sphere1);
+	sphere_delete(sphere2);
+	list_delete(world);
 }
