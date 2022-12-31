@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "vec3.h"
+#include "rt_utils.h"
 
 vec3_s *vec3_new_base(vec3_s in) {
     vec3_s *out = malloc(sizeof(vec3_s));
@@ -11,6 +12,24 @@ vec3_s *vec3_new_base(vec3_s in) {
 
 void vec_delete(vec3_s *in) {
     free(in);
+}
+
+
+vec3_s vec_rand() {
+    return (vec3_s) {.e = rand_double(), rand_double(), rand_double()};
+}
+
+vec3_s vec_rand_in(const double min, const double max) {
+    return (vec3_s) {.e = rand_double_in(min, max), rand_double_in(min, max), rand_double_in(min, max)};
+}
+
+vec3_s vec_rand_in_unit_sphere() {
+    while (1) {
+        vec3_s p = vec_rand_in(-1.0, 1.0);
+        double len_sq = length_sq(&p);
+        if (len_sq >= 1.0) { continue; }
+        return vec_unit_vec(p);
+    }
 }
 
 vec3_s *this_add_vec(vec3_s *this, const vec3_s v) {

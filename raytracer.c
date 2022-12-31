@@ -10,11 +10,14 @@
 #define IMG_WIDTH  400
 //#define IMG_HEIGHT 256
 
+#define V_FOV_DEG      90.0
 #define ASPECT_RATIO_N 16.0
 #define ASPECT_RATIO_D 9.0
-#define VIEWPORT_H 2.0
-#define FOCAL_LEN  1.0
-#define SAMPLES_PER_PIXEL  100
+//#define VIEWPORT_H 2.0
+//#define FOCAL_LEN  1.0
+#define SAMPLES_PER_PIXEL  20
+
+#define MAX_CHILD_RAYS 20
 
 void write_color(FILE *stream, const color_s *in, int samples_per_pixel) {
     double scale = 1.0 / (samples_per_pixel + 0.0);
@@ -22,20 +25,22 @@ void write_color(FILE *stream, const color_s *in, int samples_per_pixel) {
     vec3_s c = vec_mult_c(*in, scale);
 
     // remap values from [0.0, 1.0] to [0, 255]
-    int ir = (256 * clamp(c.e[0], 0.0, 0.999));
-    int ig = (256 * clamp(c.e[1], 0.0, 0.999));
-    int ib = (256 * clamp(c.e[2], 0.0, 0.999));
+    int ir = (256 * clamp(sqrt(c.e[0]), 0.0, 0.999));
+    int ig = (256 * clamp(sqrt(c.e[1]), 0.0, 0.999));
+    int ib = (256 * clamp(sqrt(c.e[2]), 0.0, 0.999));
     fprintf(stream, "%d %d %d\n", ir, ig, ib);
 }
 
-color_s ray_color(const ray_s *r, const list_obj_s *world) {
-	hit_s *hit = list_hit(r, 0.0, INFINITY, world->parent);
+color_s ray_color(const ray_s *r, const list_obj_s *world, int depth) {
+    if (depth <= 0) { return (color_s) {.e = 0.0, 0.0, 0.0}; }
+	hit_s *hit = list_hit(r, 0.001, INFINITY, world->parent);
 	if (hit != NULL) {
-		color_s out = vec_mult_c(vec_add_vec(hit->norm, (color_s) {.e = {1.0, 1.0, 1.0}}), 0.5);
-		free(hit);
-		return out;
+        point_s target = vec_sum(hit->norm, hit->pt, vec_rand_in_unit_sphere());
+        ray_s ray_rec = (ray_s) { .orig = hit->pt, .dir = vec_sub_vec(target, hit->pt)};
+    	free(hit);
+        return vec_mult_c(ray_color(&ray_rec, world, depth - 1), 0.5);
 	}
-    vec3_s unit = vec_unit_vec(*(r->dir));
+    vec3_s unit = vec_unit_vec(r->dir);
     double t = 0.5 * (unit.e[1] + 1.0);
     return vec_add_vec(vec_mult_c((vec3_s) {.e = {1.0, 1.0, 1.0}}, 1.0 - t),  vec_mult_c((vec3_s) {.e = {0.5, 0.7, 1.0}}, t));
 } 
@@ -49,10 +54,15 @@ int main() {
 
     // World
     list_obj_s *world = list_new();
-    obj_s *sphere1 = sphere_new((point_s) {.e = {0.0, 0.0, -1.0}}, 0.5);
-    obj_s *sphere2 = sphere_new((point_s) {.e = {0.0, -100.5, -1.0}}, 100.0);
-    list_add(world, sphere1);
-    list_add(world, sphere2);
+//  obj_s *sphere1 = sphere_new((point_s) {.e = {0.0, 0.0, -1.0}}, 0.5);
+//  obj_s *sphere2 = sphere_new((point_s) {.e = {0.0, -100.5, -1.0}}, 100.0);
+//  list_add(world, sphere1);
+//  list_add(world, sphere2);
+    double r = cos(M_PI/4.0);
+    obj_s *left_sphere  = sphere_new((point_s) {.e = {-r, 0.0, -1.0}}, r);
+    obj_s *right_sphere = sphere_new((point_s) {.e = { r, 0.0, -1.0}}, r);
+    list_add(world, left_sphere);
+    list_add(world, right_sphere);
 
     // Camera
     camera_s *cam = camera_new();
@@ -68,14 +78,16 @@ int main() {
                 double v = (i+rand_double()) / (img_h-1);
                 ray_s r = get_ray(cam, u, v);
                 //vec3_s pixel_rgb = ray_color(&r, world);
-                this_add_vec(&pixel_color, ray_color(&r, world));
+                this_add_vec(&pixel_color, ray_color(&r, world, MAX_CHILD_RAYS));
             }
             write_color(stdout, &pixel_color, SAMPLES_PER_PIXEL);
         }
     }
 
 	// Free
-	sphere_delete(sphere1);
-	sphere_delete(sphere2);
+//  sphere_delete(sphere1);
+//  sphere_delete(sphere1);
+	sphere_delete(left_sphere);
+	sphere_delete(right_sphere);
 	list_delete(world);
 }

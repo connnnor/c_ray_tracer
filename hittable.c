@@ -7,7 +7,7 @@
 // hit record
 hit_s *hit_new(const ray_s *r, const double t, const point_s p, const vec3_s *outward_norm) {
 	hit_s *out = malloc(sizeof(hit_s));
-	bool front = dot(r->dir, outward_norm) < 0.0;
+	bool front = dot(&r->dir, outward_norm) < 0.0;
 
 	 *out = (hit_s) {.t = t,
 					 .pt = p, 
@@ -107,10 +107,10 @@ hit_s* sphere_hit(const ray_s *r, const double t_min, const double t_max, const 
 //  fprintf(stderr, "sphere_hit(r = %p, t_min = %f, t_max = %f, obj = %p)\n", r, t_min, t_max, obj);
 	sphere_obj_s *sp = obj->private;
 
-    vec3_s oc = vec_sub_vec(*(r->orig), sp->center);
+    vec3_s oc = vec_sub_vec(r->orig, sp->center);
 
-    double a = length_sq(r->dir);
-    double half_b = dot(&oc, r->dir);
+    double a = length_sq(&r->dir);
+    double half_b = dot(&oc, &r->dir);
     double c = length_sq(&oc) - sp->rad * sp->rad;
 
     double discr = half_b*half_b - a*c;

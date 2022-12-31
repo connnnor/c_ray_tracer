@@ -12,6 +12,9 @@ typedef struct {
 typedef vec3_s color_s;
 typedef vec3_s point_s;
 
+vec3_s vec_rand();
+vec3_s vec_rand_in(const double min, const double max);
+vec3_s vec_rand_in_unit_sphere();
 
 vec3_s *vec3_new_base(vec3_s in);
 void vec_delete(vec3_s *in);
