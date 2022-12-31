@@ -47,6 +47,7 @@ void vec3_print(const vec3_s *in);
 
 // utility
 double dot(const vec3_s *u, const vec3_s *v);
+vec3_s vec_cross(const vec3_s u, const vec3_s v);
 
 vec3_s vec_add_vecs(vec3_s list[]);
 

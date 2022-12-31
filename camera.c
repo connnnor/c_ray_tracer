@@ -12,15 +12,19 @@ camera_s *camera_new_base(camera_s in) {
     double h = tan(theta / 2.0);
     double viewport_ht = 2.0 * h;
     double viewport_wd = out->aspect_ratio * viewport_ht;
-    double focal_len = 1.0;
+
+    // camera view orientation
+    vec3_s w = vec_unit_vec(vec_sub_vec(out->look_from, out->look_at));
+    vec3_s u = vec_unit_vec(vec_cross(out->view_up, w));
+    vec3_s v = vec_cross(w, u);
     
-    out->origin = (vec3_s) {.e = {0.0, 0.0, 0.0}};
-    out->horz =   (vec3_s) {.e = {viewport_wd, 0.0, 0.0}};
-    out->vert  =  (vec3_s) {.e = {0.0, viewport_ht, 0.0}};
-    out->low_left  = out->origin;
-    this_sub_vec(&out->low_left, vec_div_c(out->horz, 2));
-    this_sub_vec(&out->low_left, vec_div_c(out->vert, 2));
-    this_sub_vec(&out->low_left, (vec3_s) {.e = {0.0, 0.0, focal_len}});
+    out->origin = out->look_from;
+    out->horz =   vec_mult_c(u, viewport_wd);
+    out->vert  =  vec_mult_c(v, viewport_ht);
+    out->low_left = vec_sum(out->origin,
+                         vec_mult_c(out->horz, -0.5),
+                         vec_mult_c(out->vert, -0.5),
+                         vec_neg(w));
     return out;
 }
 

@@ -8,16 +8,14 @@
 #include "hittable.h"
 
 #define IMG_WIDTH  400
-//#define IMG_HEIGHT 256
 
 #define V_FOV_DEG      90.0
 #define ASPECT_RATIO_N 16.0
 #define ASPECT_RATIO_D 9.0
 //#define VIEWPORT_H 2.0
-//#define FOCAL_LEN  1.0
 #define SAMPLES_PER_PIXEL  20
 
-#define MAX_CHILD_RAYS 20
+#define MAX_CHILD_RAYS 5
 
 void write_color(FILE *stream, const color_s *in, int samples_per_pixel) {
     double scale = 1.0 / (samples_per_pixel + 0.0);
@@ -58,14 +56,21 @@ int main() {
 //  obj_s *sphere2 = sphere_new((point_s) {.e = {0.0, -100.5, -1.0}}, 100.0);
 //  list_add(world, sphere1);
 //  list_add(world, sphere2);
-    double r = cos(M_PI/4.0);
-    obj_s *left_sphere  = sphere_new((point_s) {.e = {-r, 0.0, -1.0}}, r);
-    obj_s *right_sphere = sphere_new((point_s) {.e = { r, 0.0, -1.0}}, r);
-    list_add(world, left_sphere);
-    list_add(world, right_sphere);
+//  double r = cos(M_PI/4.0);
+    obj_s *objs[] = {
+        sphere_new((point_s) {.e = { 0.0, -100.5, -1.0}}, 100.0),
+        sphere_new((point_s) {.e = { 0.0,    0.0, -1.0}}, 0.5),
+        sphere_new((point_s) {.e = {-1.0,    0.0, -1.0}}, 0.5),
+        sphere_new((point_s) {.e = { 1.0,    0.0, -1.0}}, 0.5),
+        NULL
+    };
+    // add objs to world
+    for (obj_s **obj = objs; *obj; obj++) { list_add(world, *obj); }
+    //list_add(world, right_sphere);
 
     // Camera
-    camera_s *cam = camera_new();
+    camera_s *cam = camera_new(.look_from = (vec3_s) {-2.0,  2.0,  1.0},
+                               .look_at   = (vec3_s) { 0.0,  0.0, -1.0});
 
     // Render
 
@@ -87,7 +92,7 @@ int main() {
 	// Free
 //  sphere_delete(sphere1);
 //  sphere_delete(sphere1);
-	sphere_delete(left_sphere);
-	sphere_delete(right_sphere);
+//  sphere_delete(left_sphere);
+//  sphere_delete(right_sphere);
 	list_delete(world);
 }

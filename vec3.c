@@ -148,6 +148,14 @@ inline double dot(const vec3_s *u, const vec3_s *v) {
            (*v).e[2] * (*u).e[2];
 }
 
+inline vec3_s vec_cross(const vec3_s u, const vec3_s v) {
+    return (vec3_s) {.e = {
+        u.e[1] * v.e[2] - u.e[2] * v.e[1],  // out[0]
+        u.e[2] * v.e[0] - u.e[0] * v.e[2],  // out[1]
+        u.e[0] * v.e[1] - u.e[1] * v.e[0],  // out[2]
+        }};
+}
+
 void vec3_print(const vec3_s *in) {
     printf("v = (%f, %f, %f)\n", (*in).e[0], (*in).e[1], (*in).e[2]);
 }
