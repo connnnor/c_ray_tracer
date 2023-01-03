@@ -78,19 +78,11 @@ int main() {
     };
     // add objs to world
     for (obj_s **obj = objs; *obj; obj++) { list_add(world, *obj); }
-    //list_add(world, right_sphere);
 
     // Camera
 //  camera_s *cam = camera_new(.look_from = (vec3_s) {-2.0,  2.0,  1.0},
 //                             .look_at   = (vec3_s) { 0.0,  0.0, -1.0});
 
-    // Render loop (changing camera viewpoint)
-//  fprintf(stderr, "fmod(180.0, 360) = %f\n", fmod(180.0, 360));
-//  fprintf(stderr, "fmod(359.0, 360) = %f\n", fmod(359.0, 360));
-//  fprintf(stderr, "fmod(361.0, 360) = %f\n", fmod(361.0, 360));
-//  fprintf(stderr, "fmod(719.0, 360) = %f\n", fmod(719.0, 360));
-//  fprintf(stderr, "fmod(722.0, 360) = %f\n", fmod(722.0, 360));
-//
     //vec3_s look_from = (vec3_s) { .e = {0.0,  0.0,  1.0}};
     vec3_s look_from = (vec3_s) { .e = {2.0,  1.0,  1.0}};
     vec3_s look_at   = (vec3_s) { .e = {0.0,  0.0, -1.0}};
@@ -122,21 +114,6 @@ int main() {
         fprintf(stderr, "\rProgress %.2f", cur_deg / 361.0);
 //  }
 //  fprintf(stderr, "\n");
-
-//  write_ppm_header(stdout, img_w, img_h);
-//  for (int i = img_h - 1; i >= 0; --i) {
-//      for (int j = 0; j < img_w; ++j) {
-//          color_s pixel_color = (vec3_s) {.e = 0.0, 0.0, 0.0};
-//          for (int s = 0; s < SAMPLES_PER_PIXEL; ++s) {
-//              double u = (j+rand_double()) / (img_w-1);
-//              double v = (i+rand_double()) / (img_h-1);
-//              ray_s r = get_ray(cam, u, v);
-//              //vec3_s pixel_rgb = ray_color(&r, world);
-//              this_add_vec(&pixel_color, ray_color(&r, world, MAX_CHILD_RAYS));
-//          }
-//          write_ppm_color(stdout, &pixel_color, SAMPLES_PER_PIXEL);
-//      }
-//  }
 
 	// Free
     //material_delete_all(lambert_ground, lambert_center, lambert_left, lambert_right);

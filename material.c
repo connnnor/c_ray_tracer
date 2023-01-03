@@ -5,7 +5,6 @@
 material_s *lambert_new(const color_s c) {
 	material_s *mat = malloc(sizeof(material_s));
 	metal_material_s *mat_lambert = malloc(sizeof(lambert_material_s));
-	//mat->c = c;
 	mat_lambert->parent = mat;
 	*mat = (material_s){.private=mat_lambert, .scatter_fp=lambert_scatter, .c = c};
 	return mat;
@@ -20,7 +19,6 @@ ray_s* lambert_scatter(const ray_s *r, const hit_s *hit, const material_s *mat) 
 material_s *metal_new(const color_s c) {
 	material_s *mat = malloc(sizeof(material_s));
 	metal_material_s *mat_metal = malloc(sizeof(metal_material_s));
-	//mat_metal->c = c;
 	mat->c = c;
 	mat_metal->parent = mat;
 	*mat = (material_s){.private=mat_metal, .scatter_fp=metal_scatter, .c = c};
