@@ -1,17 +1,17 @@
 #include "hittable.h"
-#include <math.h>
-#include <stdlib.h> // malloc
-#include <stdio.h>
+#include <stdlib.h> //malloc, free
+#include "material.h"
 
 // hit_s
 // hit record
-hit_s *hit_new(const ray_s *r, const double t, const point_s p, const vec3_s *outward_norm) {
+hit_s *hit_new(const ray_s *r, const double t, const point_s p, const vec3_s *outward_norm, material_s *mat) {
 	hit_s *out = malloc(sizeof(hit_s));
 	bool front = dot(&r->dir, outward_norm) < 0.0;
 
 	 *out = (hit_s) {.t = t,
 					 .pt = p, 
 					 .front = front, 
+                     .mat = mat,
 					 .norm = front ? *outward_norm : vec_neg(*outward_norm)};
 	 return out;
 }
@@ -84,12 +84,12 @@ typedef struct sphere_obj_s {
 	double rad;  // raidus
 } sphere_obj_s;
 
-obj_s *sphere_new(const point_s p, double r) {
+obj_s *sphere_new(const point_s p, double r, material_s *mat) {
 	obj_s *out = malloc(sizeof(obj_s));
 	sphere_obj_s *out_sp = malloc(sizeof(sphere_obj_s));
 	out_sp->center = p;
 	out_sp->rad = r;
-	*out = (obj_s){.private=out_sp, .hit_fp=sphere_hit};
+	*out = (obj_s){.private=out_sp, .hit_fp=sphere_hit, .mat=mat};
 	return out;
 }
 
@@ -127,7 +127,7 @@ hit_s* sphere_hit(const ray_s *r, const double t_min, const double t_max, const 
 	}
 	point_s hit_pt = point_at(r, root);
 	vec3_s out_norm = vec_div_c(vec_sub_vec(hit_pt, sp->center), sp->rad);
-	hit_s *out = hit_new(r, root, hit_pt, &out_norm);
+	hit_s *out = hit_new(r, root, hit_pt, &out_norm, obj->mat);
 	return out;
 }
 

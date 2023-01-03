@@ -1,6 +1,7 @@
 #ifndef VEC3_H
 #define VEC3_H
 #include <math.h>
+#include <stdbool.h>
 
 #define vec3_new(...) vec3_new_base((vec3_s){.e = {0.0, 0.0, 0.0}, __VA_ARGS__})
 
@@ -28,6 +29,9 @@ vec3_s vec_sub_vec(const vec3_s u, const vec3_s v);
 vec3_s *this_sub_vec(vec3_s *this, const vec3_s v);
 vec3_s *vec_sub_c(const vec3_s *u, double c);
 
+
+vec3_s vec_mult_vec(const vec3_s u, const vec3_s v);
+
 vec3_s *this_mult_c(vec3_s *this, const double c);
 vec3_s vec_mult_c(const vec3_s v, double c);
 vec3_s *this_neg(vec3_s *this);
@@ -50,6 +54,8 @@ double dot(const vec3_s *u, const vec3_s *v);
 vec3_s vec_cross(const vec3_s u, const vec3_s v);
 
 vec3_s vec_add_vecs(vec3_s list[]);
+
+vec3_s vec_reflect(const vec3_s v, const vec3_s n);
 
 #define vec_sum(...)  vec_add_vecs((vec3_s[]){__VA_ARGS__, (vec3_s) {.e = NAN, NAN, NAN}});
 #endif

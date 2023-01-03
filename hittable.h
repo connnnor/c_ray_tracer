@@ -3,11 +3,14 @@
 #include <stdbool.h>
 #include "ray.h"
 
+struct material_s;
+
 typedef struct {
     point_s pt;
     vec3_s norm;
     double t;
 	bool front;
+    struct material_s *mat;
 } hit_s;
 
 // forward declare so i can use in func ptr def
@@ -17,6 +20,7 @@ typedef hit_s* (*hit_func)(const ray_s *, const double, const double, const stru
 
 typedef struct obj_s {
 	void *private;
+    struct material_s *mat;
     hit_func hit_fp;
 } obj_s;
 
@@ -38,7 +42,7 @@ hit_s* list_hit(const ray_s *r, const double t_min, const double t_max, const st
 void list_add_obj(obj_s *list_obj, obj_s * obj);
 void list_add(list_obj_s *list, obj_s * obj);
 
-obj_s *sphere_new(const point_s p, double r);
+obj_s *sphere_new(const point_s p, double r, struct material_s *mat);
 void sphere_delete(obj_s *obj);
 hit_s* sphere_hit(const ray_s *r, const double t_min, const double t_max, const struct obj_s *obj);
 #endif
