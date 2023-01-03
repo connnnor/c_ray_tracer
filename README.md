@@ -26,7 +26,7 @@ Settings: 1200 x 675. samples/pixel = 100. max child rays = 50
 __Animated__:
 with much lower resolution / quality:
 
-![](/img/image.png?raw=true)
+![](/img/anim.gif?raw=true)
 
 
 [1]: https://raytracing.github.io/books/RayTracingInOneWeekend.html
