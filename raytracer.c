@@ -34,8 +34,8 @@ void write_ppm_color(FILE *stream, const color_s *in, int samples_per_pixel) {
 
 color_s ray_color(const ray_s *r, const list_obj_s *world, int depth) {
     if (depth <= 0) { return (color_s) {.e = 0.0, 0.0, 0.0}; }
-	hit_s *hit = list_hit(r, 0.001, INFINITY, world->parent);
-	if (hit != NULL) {
+    hit_s *hit = list_hit(r, 0.001, INFINITY, world->parent);
+    if (hit != NULL) {
         ray_s *scatter = hit->mat->scatter_fp(r, hit, hit->mat);
         color_s color_out = (color_s) {.e = 0.0, 0.0, 0.0};
         if (scatter != NULL) {
@@ -45,7 +45,7 @@ color_s ray_color(const ray_s *r, const list_obj_s *world, int depth) {
         }
         free(hit);
         return color_out;
-	}
+    }
     vec3_s unit = vec_unit_vec(r->dir);
     double t = 0.5 * (unit.e[1] + 1.0);
     return vec_add_vec(vec_mult_c((vec3_s) {.e = {1.0, 1.0, 1.0}}, 1.0 - t),  vec_mult_c((vec3_s) {.e = {0.5, 0.7, 1.0}}, t));
@@ -114,7 +114,7 @@ int main() {
         fprintf(stderr, "\rScalines remaining %04d", i);
     }
 
-	// Free
-	list_delete(world);
+    // Free
+    list_delete(world);
 }
 
