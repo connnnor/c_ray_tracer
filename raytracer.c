@@ -8,12 +8,12 @@
 #include "hittable.h"
 #include "material.h"
 
-#define IMG_WIDTH  300
+#define IMG_WIDTH  800
 #define V_FOV_DEG      90.0
 #define ASPECT_RATIO_N 3.0
 #define ASPECT_RATIO_D 2.0
-#define SAMPLES_PER_PIXEL  10 // Range 1 - 100
-#define MAX_CHILD_RAYS  5     // Range 1 -  50
+#define SAMPLES_PER_PIXEL 50  // Range 1 - 100
+#define MAX_CHILD_RAYS  30     // Range 2 -  50
 #define WORLD_NUM_OBJS  169   // make it something x^2
 
 void write_ppm_header(FILE *stream, const int width, const int height) {
@@ -95,48 +95,26 @@ int main() {
     list_obj_s *world = rand_world(WORLD_NUM_OBJS);
 
     // Camera
-//  camera_s *cam = camera_new(.look_from = (vec3_s) {-2.0,  2.0,  1.0},
-//                             .look_at   = (vec3_s) { 0.0,  0.0, -1.0});
+    camera_s *cam = camera_new(.look_from = (vec3_s) { 9.0,  1.5,  2.0},
+                               .look_at   = (vec3_s) { 0.0, -3.5,  1.0});
 
-    //vec3_s look_from = (vec3_s) { .e = {0.0,  0.0,  1.0}};
-    vec3_s look_from = (vec3_s) { .e = {9.0,   1.5,  2.0}};
-    vec3_s look_at   = (vec3_s) { .e = {0.0,   -3.5,  1.0}};
-    double deg_per_frame = 3.0;
-    double cur_deg = 0.0;
-//  while(cur_deg < 361.0) {
-        // X & Y positions will go along circle
-        //look_from = (vec3_s) { .e = { 2.0 * cos_deg(cur_deg), 2.0, 2.0 * sin_deg(cur_deg)}};
-        //cur_deg = fmod(cur_deg, 360);
-        //cur_deg += deg_per_frame;
-
-        camera_s *cam = camera_new(.look_from = look_from, .look_at   = look_at);
-        //printf("P3\n" "%d\t%d\n" "255\n", img_w, img_h);
-        write_ppm_header(stdout, img_w, img_h);
-        for (int i = img_h - 1; i >= 0; --i) {
-            for (int j = 0; j < img_w; ++j) {
-                color_s pixel_color = (vec3_s) {.e = 0.0, 0.0, 0.0};
-                for (int s = 0; s < SAMPLES_PER_PIXEL; ++s) {
-                    double u = (j+rand_double()) / (img_w-1);
-                    double v = (i+rand_double()) / (img_h-1);
-                    ray_s r = get_ray(cam, u, v);
-                    //vec3_s pixel_rgb = ray_color(&r, world);
-                    this_add_vec(&pixel_color, ray_color(&r, world, MAX_CHILD_RAYS));
-                }
-                write_ppm_color(stdout, &pixel_color, SAMPLES_PER_PIXEL);
+    // Render
+    write_ppm_header(stdout, img_w, img_h);
+    for (int i = img_h - 1; i >= 0; --i) {
+        for (int j = 0; j < img_w; ++j) {
+            color_s pixel_color = (vec3_s) {.e = 0.0, 0.0, 0.0};
+            for (int s = 0; s < SAMPLES_PER_PIXEL; ++s) {
+                double u = (j+rand_double()) / (img_w-1);
+                double v = (i+rand_double()) / (img_h-1);
+                ray_s r = get_ray(cam, u, v);
+                this_add_vec(&pixel_color, ray_color(&r, world, MAX_CHILD_RAYS));
             }
-            fprintf(stderr, "\rScalines remaining %04d", i);
+            write_ppm_color(stdout, &pixel_color, SAMPLES_PER_PIXEL);
         }
-        fprintf(stderr, "\rProgress %.2f", cur_deg / 361.0);
-//  }
-//  fprintf(stderr, "\n");
+        fprintf(stderr, "\rScalines remaining %04d", i);
+    }
 
 	// Free
-    //material_delete_all(lambert_ground, lambert_center, lambert_left, lambert_right);
-    //sphere_delete_all();
-//  sphere_delete(sphere1);
-//  sphere_delete(sphere1);
-//  sphere_delete(left_sphere);
-//  sphere_delete(right_sphere);
 	list_delete(world);
 }
 
