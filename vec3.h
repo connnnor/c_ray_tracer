@@ -59,3 +59,6 @@ vec3_s vec_reflect(const vec3_s v, const vec3_s n);
 
 #define vec_sum(...)  vec_add_vecs((vec3_s[]){__VA_ARGS__, (vec3_s) {.e = NAN, NAN, NAN}});
 #endif
+
+
+color_s rand_color();

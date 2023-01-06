@@ -185,3 +185,7 @@ bool vec_near_zero(const vec3_s u) {
 vec3_s vec_reflect(const vec3_s v, const vec3_s n) {
     return vec_sub_vec(n, vec_mult_c(n, 2.0 * dot(&v, &n)));
 }
+
+color_s rand_color() {
+    return vec_rand_in(0.0, 1.0);
+}
