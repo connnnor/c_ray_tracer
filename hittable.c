@@ -11,9 +11,9 @@ hit_s *hit_new(const ray_s *r, const double t, const point_s p, const vec3_s *ou
 	 *out = (hit_s) {.t = t,
 					 .pt = p, 
 					 .front = front, 
-                     .mat = mat,
+					 .mat = mat,
 					 .norm = front ? *outward_norm : vec_neg(*outward_norm)};
-	 return out;
+	return out;
 }
 
 
@@ -28,8 +28,7 @@ obj_s *copy_obj(obj_s *obj) {
 // hittable list
 
 hit_s* list_hit(const ray_s *r, const double t_min, const double t_max, const obj_s *list_obj) {
- 	hit_s *out = NULL;
-//  fprintf(stderr, "list_hit(r = %p, t_min = %f, t_max = %f, obj = %p)\n", r, t_min, t_max, list_obj);
+	hit_s *out = NULL;
 	list_obj_s *list = list_obj->private;
 	double t_local_max = t_max;
 	for (int i=0; i < list->len; i++) {
@@ -57,20 +56,25 @@ list_obj_s *list_new() {
 	list_obj_s *list = malloc(sizeof(list_obj_s));
 	*obj = (obj_s){.private=list};
 	list->parent = obj;
+	list->objs = malloc(sizeof(sizeof(obj_s*) * 1));
 	list->len = 0;
 	return list;
 }
 
 void list_delete(list_obj_s *list) {
-    free(list->parent);
+	free(list->parent);
+	for (int i=0; i < list->len; i++) {
+		obj_s *sphere_obj = list->objs[i];
+		sphere_delete(sphere_obj);
+	}
 	free(list->objs);
 	free(list);
 }
 
 void list_add(list_obj_s *list, obj_s * obj) {
-  	list->len++;
-  	list->objs = realloc(list->objs, sizeof(obj_s*)*list->len);
-  	list->objs[list->len - 1] = obj;
+	list->len++;
+	list->objs = realloc(list->objs, sizeof(obj_s*) * list->len);
+	list->objs[list->len - 1] = obj;
 }
 void list_add_obj(obj_s *list_obj, obj_s * obj) {
 	list_obj_s *list = list_obj->private;
@@ -99,23 +103,23 @@ void hit_delete(hit_s *obj) {
 
 void sphere_delete(obj_s *obj) {
 	sphere_obj_s *sp = obj->private;
+    mat_delete(obj->mat);
 	free(sp);
 	free(obj);
 }
 
 hit_s* sphere_hit(const ray_s *r, const double t_min, const double t_max, const obj_s *obj) {
-//  fprintf(stderr, "sphere_hit(r = %p, t_min = %f, t_max = %f, obj = %p)\n", r, t_min, t_max, obj);
 	sphere_obj_s *sp = obj->private;
 
-    vec3_s oc = vec_sub_vec(r->orig, sp->center);
+	vec3_s oc = vec_sub_vec(r->orig, sp->center);
 
-    double a = length_sq(&r->dir);
-    double half_b = dot(&oc, &r->dir);
-    double c = length_sq(&oc) - sp->rad * sp->rad;
+	double a = length_sq(&r->dir);
+	double half_b = dot(&oc, &r->dir);
+	double c = length_sq(&oc) - sp->rad * sp->rad;
 
-    double discr = half_b*half_b - a*c;
-    if (discr < 0.0) { return NULL; }
-			
+	double discr = half_b*half_b - a*c;
+	if (discr < 0.0) { return NULL; }
+
 	double sqrt_d = sqrt(discr);
 
 	double root = (-half_b - sqrt_d) / a;

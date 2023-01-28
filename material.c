@@ -2,6 +2,11 @@
 #include "vec3.h"
 #include <stdlib.h> // NULL
 
+void mat_delete(material_s *mat) {
+    free(mat->private);
+    free(mat);
+}
+
 material_s *lambert_new(const color_s c) {
 	material_s *mat = malloc(sizeof(material_s));
 	metal_material_s *mat_lambert = malloc(sizeof(lambert_material_s));

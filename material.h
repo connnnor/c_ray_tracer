@@ -15,6 +15,8 @@ typedef struct material_s {
     color_s c;
 } material_s;
 
+void mat_delete(material_s *mat);
+
 // lambertian material
 
 typedef struct lambert_material_s {

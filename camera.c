@@ -29,8 +29,8 @@ camera_s *camera_new_base(camera_s in) {
 }
 
 
-void camera_delete(camera_s in) {
-    // TODO
+void camera_delete(camera_s *in) {
+    free(in);
 }
 
 

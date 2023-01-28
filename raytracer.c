@@ -95,8 +95,8 @@ int main() {
     list_obj_s *world = rand_world(WORLD_NUM_OBJS);
 
     // Camera
-    camera_s *cam = camera_new(.look_from = (vec3_s) { 9.0,  1.5,  2.0},
-                               .look_at   = (vec3_s) { 0.0, -3.5,  1.0});
+    camera_s *cam = camera_new(.look_from = (vec3_s) { 5.0,  1.5,  2.0},
+                               .look_at   = (vec3_s) { 0.0, -2.5,  1.0});
 
     // Render
     write_ppm_header(stdout, img_w, img_h);
@@ -116,5 +116,6 @@ int main() {
 
     // Free
     list_delete(world);
+    camera_delete(cam);
 }
 

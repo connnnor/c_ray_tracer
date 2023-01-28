@@ -29,7 +29,7 @@ typedef struct camera_s {
 } camera_s;
 
 camera_s *camera_new_base(camera_s in);
-void camera_delete(camera_s in);
+void camera_delete(camera_s *in);
 ray_s get_ray(camera_s *cam, const double u, const double v);
 
 #endif
